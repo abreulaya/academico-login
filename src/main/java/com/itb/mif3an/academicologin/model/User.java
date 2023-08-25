@@ -33,6 +33,14 @@ public class User {
 	// Criamos uma tabela para gerenciar as chaves primárias, não há suporte para todos
 	// os provedores
 	
+	public User(String firstName, String lastName, String email, String password) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+	}
+
 	@Id  // PK
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-Incremento
 	private Long id;
