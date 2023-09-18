@@ -16,31 +16,38 @@ public class Role {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-private Long Id;
-private String Name;
+private Long id;
+private String name;
 
-
-public Long getId() {
-	return Id;
-}
-public void setId(Long id) {
-	Id = id;
-}
-public String getNome() {
-	return Name;
-}
-public void setNome(String nome) {
-	Name = nome;
-}
 
 public Role() {
+
+}
+
+public Role( String name) {
+
 	
+	this.name = name;
 }
-public Role(String nome) {
-	Name = nome;
+public Role(Long id, String name) {
+
+	this.id = id;
+	this.name = name;
 }
-public Role(Long id, String nome) {
-	Id = id;
-	Name = nome;
+public Long getId() {
+	return id;
 }
+public void setId(Long id) {
+	this.id = id;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+
+
+
+
 }

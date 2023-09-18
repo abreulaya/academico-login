@@ -1,8 +1,12 @@
 package com.itb.mif3an.academicologin.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,63 +20,72 @@ import com.itb.mif3an.academicologin.web.dto.UserDto;
 
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
+	
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private RoleRepository roleRepository;
-	
-	@Autowired // injeção de dependencia - instancia automaticamente
-	private UserRepository userRepository;
-	
+
 	@Override
 	public User findByEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return userRepository.findByEmail(email);
 	}
 
 	@Override
 	public User save(UserDto userDto) {
 		
-		//Algoritimo para criptografar a senha 
-	
-		User user = new User(userDto.getFirstName(),
-				            userDto.getLastName(), 
-				            userDto.getEmail(), 
-				            passwordEncoder.encode(userDto.getPassword()), 
-				            new ArrayList<>());// construtor 
+		// Algoritmo para criptografar a senha :  passwordEncoder
 		
-		 userRepository.save (user);
-		 this.addRoleToUser(user.getEmail(), "ROLE_USER");
-		return user;
+		User user = new User(userDto.getFirstName(),
+				             userDto.getLastName(), 
+				             userDto.getEmail(), 
+				             passwordEncoder.encode(userDto.getPassword()),
+				             new ArrayList<>());
+		      userRepository.save(user);
+		      this.addRoleToUser(user.getEmail(), "ROLE_USER");
+		      return user;
+		      
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		User user = userRepository.findByEmail(username);
+		if (user==null) {
+			throw new UsernameNotFoundException("Invalid username or password");
+		}
+		
+		
+		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), mapRoleToAuthorities(user.getRoles()));
 	}
+	
+	//Método responsável em trazer os pápeis relacionados ao usuário
+	private Collection <?extends GrantedAuthority>mapRoleToAuthorities(Collection<Role> roles){
+	return roles.stream().map(role ->new SimpleGrantedAuthority(role.getName ())).collect(Collectors.toList());
+		
+	}
+	
+	
 
 	@Override
 	public void addRoleToUser(String username, String roleName) {
-		
 		User user = userRepository.findByEmail(username);
-		Role role = roleRepository.findByName (roleName);
+		Role role = roleRepository.findByName(roleName);
 		user.getRoles().add(role);
 		userRepository.save(user);
-		
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Role saveRole(Role role) {
-		// TODO Auto-generated method stub
-		return roleRepository.save(role);
+			return roleRepository.save(role);
 	}
 
-	
 }
-
