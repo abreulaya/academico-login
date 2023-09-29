@@ -21,7 +21,7 @@ public class Endereco {
 	private String cidade;
 	private String uf;
 	 
-	//M:1 muitos endereços para 1
+	//M:1 muitos endereços para 1 usuário
 	@ManyToOne
 	@JoinColumn (name= "user_id")
 	private User user;

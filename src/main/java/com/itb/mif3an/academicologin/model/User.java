@@ -1,6 +1,7 @@
 package com.itb.mif3an.academicologin.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class User {
 		this.password = password;
 		
 		
+		
 	}
 
 	public User(String firstName, String lastName, String email, String password, Collection<Role> roles) {
@@ -60,12 +62,11 @@ public class User {
 	private String lastName;
 	private String email;
 	private String password;
-	private LocalDate dataNacimento;
+	private LocalDate dataNascimento;
 	
 	//1:N
-	@OneToMany // Um usuario para muitos endereços
-	@JoinColumn (name="endereco_id")// Chave estrangeira FK
-	private List<Endereco> enderecos;
+	@OneToMany (mappedBy = "user", cascade = CascadeType.ALL) // Um usuario para muitos endereços
+	private List<Endereco> enderecos = new ArrayList<Endereco> ();
 	
 	
 	// M:N
@@ -145,12 +146,12 @@ public class User {
 		this.roles = roles;
 	}
 
-	public LocalDate getDataNacimento() {
-		return dataNacimento;
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
 	}
 
-	public void setDataNacimento(LocalDate dataNacimento) {
-		this.dataNacimento = dataNacimento;
+	public void setDataNascimento(LocalDate dataNacimento) {
+		this.dataNascimento = dataNacimento;
 	}
 	
 	
