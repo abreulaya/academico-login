@@ -1,6 +1,6 @@
 package com.itb.mif3an.academicologin.config;
 
-import static org.springframework.http.HttpMethod.GET;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -55,9 +55,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		    		     "/img/**").permitAll()
 		    .and().authorizeRequests()
 		    .antMatchers(GET, "/users/**").hasAnyAuthority("ROLE_USER")
+		    .antMatchers(GET, "/users/**").hasAnyAuthority("ROLE_ADMIN")
+		    .antMatchers(POST, "/users/**").hasAnyAuthority("ROLE_ADMIN")
+		    .antMatchers(GET, "/users/**").hasAnyAuthority("ROLE_INSTRUCTOR")
+
 		    .anyRequest().authenticated()
 		    .and()
-		    .formLogin().defaultSuccessUrl("/users/home", true)
+		    .formLogin().defaultSuccessUrl("/users/living-room", true)
 		    .loginPage("/login")
 		    .permitAll()
 		    .and()

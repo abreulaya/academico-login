@@ -2,7 +2,10 @@ package com.itb.mif3an.academicologin.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.itb.mif3an.academicologin.model.Endereco;
 import com.itb.mif3an.academicologin.model.Role;
 import com.itb.mif3an.academicologin.model.User;
 import com.itb.mif3an.academicologin.repository.RoleRepository;
@@ -44,6 +48,17 @@ public class UserServiceImpl implements UserService {
 
 		User user = new User(userDto.getFirstName(), userDto.getLastName(), userDto.getEmail(),
 				passwordEncoder.encode(userDto.getPassword()), new ArrayList<>());
+		
+		List <Endereco> enderecos = new ArrayList <>();
+		Endereco endereco = new Endereco ();
+		
+		//RELACIONAMENTO ENTRE ENDERECOS E USER
+		endereco.setUser(user);
+		enderecos.add(endereco);
+		
+		//RELACIONAMENTO ENTRE USER E ENDEREÇOS (ARRAY)
+		user.setEnderecos(enderecos);
+		
 		userRepository.save(user);
 		this.addRoleToUser(user.getEmail(), "ROLE_USER");
 		return user;
@@ -100,13 +115,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public User update(UserDto userDto) {
 		
 		User user = userRepository.findByEmail (userDto.getEmail ());
-		user.setFirstName (userDto.getFirstName());
-		user.setLastName (userDto.getLastName());
-		user.setDataNascimento(userDto.getDataNascimento ());
-		user.setEnderecos (userDto.getEnderecos ());
+		//BUSCAR O ENDEREÇO PRINCIPAL
+		Endereco enderecoBb = user.getEnderecos().get(0);	
+		enderecoBb.setCep(userDto.getEnderecos().get(0).getCep());
+		enderecoBb.setLogradouro(userDto.getEnderecos().get(0).getLogradouro());
+		enderecoBb.setBairro(userDto.getEnderecos().get(0).getBairro());
+		enderecoBb.setCidade(userDto.getEnderecos().get(0).getCidade());
+		enderecoBb.setUf(userDto.getEnderecos().get(0).getUf());
+		
+		
+		//OUTROS DADOS DO USUÁRIO
+		user.setFirstName(userDto.getFirstName());
+		user.setLastName(userDto.getLastName());
+		user.setDataNascimento(userDto.getDataNascimento());
+
 		
 		return userRepository.save(user);
 	}
