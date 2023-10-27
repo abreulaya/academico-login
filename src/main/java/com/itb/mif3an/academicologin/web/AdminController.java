@@ -25,6 +25,11 @@ public String homeAdmin (Model model) {
 	return home;
 	
 }
+@GetMapping ("/usuarios/todos-usuarios")
+public String showUsuarios(Model model) {
+	return "";
+	
+}
 
 	
 	
