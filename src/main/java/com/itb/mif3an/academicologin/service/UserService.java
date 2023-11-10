@@ -1,5 +1,7 @@
 package com.itb.mif3an.academicologin.service;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +19,8 @@ public interface UserService extends UserDetailsService{
 	void addRoleToUser(String username, String roleName);
 	Role saveRole(Role role);
 	User getAuthenticatedUser();
-
+	List<User> findAllUserByExceptPrincipalRole(String principalRole);
+	User saveUser (User user);
+	List<Role> findAllRoles();
+	User findUserById(Long id);
 }

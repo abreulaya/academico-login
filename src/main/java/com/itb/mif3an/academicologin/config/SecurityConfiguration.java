@@ -13,11 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.itb.mif3an.academicologin.service.UserService;
-
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
+import com.itb.mif3an.academicologin.service.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -55,13 +54,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		    		     "/img/**").permitAll()
 		    .and().authorizeRequests()
 		    .antMatchers(GET, "/users/**").hasAnyAuthority("ROLE_USER")
-		    .antMatchers(GET, "/users/**").hasAnyAuthority("ROLE_ADMIN")
-		    .antMatchers(POST, "/users/**").hasAnyAuthority("ROLE_ADMIN")
-		    .antMatchers(GET, "/users/**").hasAnyAuthority("ROLE_INSTRUCTOR")
-
+		    .antMatchers(GET, "/admin/**").hasAnyAuthority("ROLE_ADMIN")
+		    .antMatchers(POST, "/admin/**").hasAnyAuthority("ROLE_ADMIN")
+		    .antMatchers(GET, "/student/**").hasAnyAuthority("ROLE_STUDENT")
+		    .antMatchers(GET, "/instructor/**").hasAnyAuthority("ROLE_INSTRUCTOR")
 		    .anyRequest().authenticated()
 		    .and()
+		    .httpBasic()
+		    .and()
 		    .formLogin().defaultSuccessUrl("/users/living-room", true)
+		    .passwordParameter("password")
+		    .usernameParameter("username")
 		    .loginPage("/login")
 		    .permitAll()
 		    .and()
@@ -71,7 +74,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 		    .logoutSuccessUrl("/login?logout")
 		    .permitAll();
-		    
 	}
 	
 }

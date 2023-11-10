@@ -137,4 +137,27 @@ public class UserServiceImpl implements UserService {
 		return userRepository.save(user);
 	}
 
+	@Override
+	public List<User> findAllUserByExceptPrincipalRole(String principalRole) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User saveUser(User user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Role> findAllRoles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public User findUserById(Long id) {
+		return userRepository.findById(id).get();
+	}
+
 }
